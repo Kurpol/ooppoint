@@ -1,20 +1,90 @@
-﻿// ooppoint.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿#include <iostream>
 
-#include <iostream>
-
-int main()
+class Number1
 {
-    std::cout << "Hello World!\n";
+private:
+	int number1;
+
+public:
+	Number1() :number1(2)
+	{
+		std::cout << "Konst1 " << std::endl;
+	}
+	Number1(int &number):number1(number)
+	{
+		std::cout << "Konstryktor 1 " << std::endl;
+		std::cout << "number1 " << number1 << std::endl;
+	}
+	~Number1()
+	{
+		std::cout << "Destryktor 1 " << std::endl;
+	}
+
+	void setNumber(int number)
+	{
+	}
+
+	int getNumber()
+	{
+		return number1;
+	}
+};
+
+class Number2:public Number1
+{
+private:
+
+	const int number2;
+
+
+public:
+	Number2() :number2(3)
+	{
+		std::cout << "Konst2 " << std::endl;
+	}
+	Number2(int &number):number2(number)
+	{
+		std::cout << "Konstryktor 2 " << std::endl;
+		std::cout << "number2 " << number2 << std::endl;
+	}
+	~Number2()
+	{
+		std::cout << "Destryktor 2 " << std::endl;
+	}
+
+	void setNumber(int number)
+	{
+	}
+
+	int getNumber()
+	{
+		return number2;
+	}
+};
+
+
+template <class T1, class T2>
+int calc(T1& t1, T2& t2)
+{
+	return t1 + t2;
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
+template<class T1, class T2>
+int operator+(T1& t1, T2& t2)
+{
+	return t1.getNumber() + t2.getNumber();
+}
 
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
+
+int main(int argc, char* argv[])
+{
+	int zero = 0;
+
+	Number1 number1;
+	Number2 number2;
+
+	int result = calc(number1, number2);
+
+	std::cout << result << std::endl;
+	return 0;
+}
