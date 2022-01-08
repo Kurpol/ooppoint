@@ -1,90 +1,70 @@
 ﻿#include <iostream>
 
-class Number1
+template<class T>
+class Auto_ptr3
 {
-private:
-	int number1;
-
+	T* m_ptr;
 public:
-	Number1() :number1(2)
+	Auto_ptr3(T* ptr = nullptr)
+		:m_ptr(ptr)
 	{
-		std::cout << "Konst1 " << std::endl;
-	}
-	Number1(int &number):number1(number)
-	{
-		std::cout << "Konstryktor 1 " << std::endl;
-		std::cout << "number1 " << number1 << std::endl;
-	}
-	~Number1()
-	{
-		std::cout << "Destryktor 1 " << std::endl;
+		std::cout << "Vizvan " << m_ptr << std::endl;
 	}
 
-	void setNumber(int number)
+	~Auto_ptr3()
 	{
+		std::cout << "Deleted " << m_ptr << std::endl;
+		delete m_ptr;
 	}
 
-	int getNumber()
+	// Конструктор копирования, который выполняет глубокое копирование x.m_ptr в m_ptr
+	Auto_ptr3(const Auto_ptr3& x)
 	{
-		return number1;
+		m_ptr = new T;
+		*m_ptr = *x.m_ptr;
 	}
+
+	// Оператор присваивания копированием, который выполняет глубокое копирование x.m_ptr в m_ptr
+	Auto_ptr3& operator=(const Auto_ptr3& x)
+	{
+		// Проверка на самоприсваивание
+		if (&x == this)
+			return *this;
+
+		// Удаляем всё, что к этому моменту может хранить указатель 
+		delete m_ptr;
+
+		// Копируем передаваемый объект
+		m_ptr = new T;
+		*m_ptr = *x.m_ptr;
+
+		return *this;
+	}
+
+	T& operator*() const { return *m_ptr; }
+	T* operator->() const { return m_ptr; }
+	bool isNull() const { return m_ptr == nullptr; }
 };
 
-class Number2:public Number1
+class Item
 {
-private:
-
-	const int number2;
-
-
 public:
-	Number2() :number2(3)
-	{
-		std::cout << "Konst2 " << std::endl;
-	}
-	Number2(int &number):number2(number)
-	{
-		std::cout << "Konstryktor 2 " << std::endl;
-		std::cout << "number2 " << number2 << std::endl;
-	}
-	~Number2()
-	{
-		std::cout << "Destryktor 2 " << std::endl;
-	}
-
-	void setNumber(int number)
-	{
-	}
-
-	int getNumber()
-	{
-		return number2;
-	}
+	Item() { std::cout << "Item acquired\n"; }
+	~Item() { std::cout << "Item destroyed\n"; }
 };
 
-
-template <class T1, class T2>
-int calc(T1& t1, T2& t2)
+Auto_ptr3<Item> generateItem()
 {
-	return t1 + t2;
+	Auto_ptr3<Item> item(new Item);
+	return item; // это возвращаемое значение приведет к вызову конструктора копирования
 }
 
-template<class T1, class T2>
-int operator+(T1& t1, T2& t2)
+int main()
 {
-	return t1.getNumber() + t2.getNumber();
-}
+	int hyi = 0;
 
+	Auto_ptr3<Item> mainItem;
+	mainItem = generateItem(); // эта операция присваивания приведет к вызову оператора присваивания копированием
 
-int main(int argc, char* argv[])
-{
-	int zero = 0;
-
-	Number1 number1;
-	Number2 number2;
-
-	int result = calc(number1, number2);
-
-	std::cout << result << std::endl;
 	return 0;
 }
